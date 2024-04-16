@@ -1,0 +1,20 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: carrito-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    url: jdbc:mysql://localhost:3306/servicioTienda_carritocompras?serverTimezone=UTC
+    username: root
+    password: 
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+

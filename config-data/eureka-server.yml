@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: eureka-server
+  profiles:
+    active: default
+
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  instance:
+    lease-renewal-interval-in-seconds: 0
+
