@@ -9,15 +9,16 @@ public interface ICarritoService {
 
     public Carrito crearCarrito(Carrito carrito);
 
-    public Carrito traerCarrito(Long id);
+    public List<CarritoDTO> traerCarritos();
 
-    public List<Carrito> traerCarritos();
+    public CarritoDTO traerCarritoDTO(Long id);
 
-    public CarritoDTO agregarProducto(Long id_carrito, Long id_prod);
+    public boolean existe(Long id);
 
-    public CarritoDTO eliminarProducto(Long id_carrito, Long id_prod);
+    public Object[] agregarProducto(Long id_carrito, Long id_prod);
+
+    public Object[] eliminarProducto(Long id_carrito, Long id_prod);
 
     public String eliminarCarrito(Long id_carrito);
 
-    public CarritoDTO traerCarritoDTO(Long id);
 }

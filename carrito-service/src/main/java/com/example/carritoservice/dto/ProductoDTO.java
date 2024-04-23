@@ -14,5 +14,4 @@ public class ProductoDTO {
     private String marca;
     private Double precio;
 
-
 }

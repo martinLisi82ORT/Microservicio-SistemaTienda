@@ -4,3 +4,13 @@ server:
 spring:
   application:
     name: config-server
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/martinLisi82ORT/SistemaTienda-config-server
+          searchPaths: config-data
+          username: ${GIT_USER}
+          password: ${GIT_PASSWORD}
+

@@ -24,8 +24,13 @@ public class VentaService implements IVentaService {
     private ICarritoAPI carritoApi;
 
     @Override
-    public Venta crearVenta(Venta venta) {
-        return repoVenta.save(venta);
+    public String crearVenta(Venta venta) {
+        String msj = "Carrito no encontrado";
+        if (carritoApi.existe(venta.getCarrito_id())) {
+            repoVenta.save(venta);
+            msj = "Venta creada correctamente, Id Venta: " + venta.getId_venta();
+        }
+        return msj;
     }
 
     @Override
@@ -62,9 +67,29 @@ public class VentaService implements IVentaService {
     }
 
     @Override
+    public Venta editarVenta(Long id_venta, Venta venta) {
+        Venta ventaEdit = repoVenta.findById(id_venta).orElse(null);
+        System.out.println(ventaEdit);
+        System.out.println(ventaEdit.getId_venta());
+        ventaEdit.setId_venta(venta.getId_venta());
+        ventaEdit.setFecha(venta.getFecha());
+        ventaEdit.setCarrito_id(venta.getCarrito_id());
+
+        repoVenta.save(ventaEdit);
+
+        VentaDTO ventaDto = this.traerVenta(id_venta);
+        return ventaEdit;
+    }
+
+    @Override
     public String eliminarVenta(Long id_venta) {
-        repoVenta.deleteById(id_venta);
-        return "La venta id " + id_venta + " fue eliminada";
+        String msj = "Venta no encontrada";
+
+        if (repoVenta.findById(id_venta).orElse(null) != null) {
+            repoVenta.deleteById(id_venta);
+            msj = "La venta id " + id_venta + " fue eliminada";
+        }
+        return msj;
     }
 
     private VentaDTO fallbackGetVentaDTO(Throwable throwable) {

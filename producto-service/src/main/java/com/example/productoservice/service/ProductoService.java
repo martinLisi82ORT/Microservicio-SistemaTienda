@@ -14,6 +14,14 @@ public class ProductoService implements IProductoService {
     private IProductoRepository prodRepo;
 
     @Override
+    public Object[] crearProducto(Producto prod) {
+        Object[] listaObj = new Object[2];
+        listaObj[0] = "Producto creado correctamente";
+        listaObj[1] = prodRepo.save(prod);
+        return listaObj;
+    }
+
+    @Override
     public List<Producto> getProductos() {
         return prodRepo.findAll();
     }
@@ -24,24 +32,60 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public Producto crearProducto(Producto prod) {
-        return prodRepo.save(prod);
+    public int traerStock(Long id) {
+        Producto prod = prodRepo.findById(id).orElse(null);
+        return prod.getStock();
     }
 
     @Override
     public String deleteProducto(Long id) {
-        prodRepo.deleteById(id);
-        return "El producto id " + id + " fue eliminado";
+        String mjs = "Producto no encontrado";
+        Producto prodElim = this.findProducto(id);
+        if (prodElim != null) {
+            prodRepo.deleteById(id);
+            mjs = "El producto id " + id + " fue eliminado";
+        }
+        return mjs;
     }
 
     @Override
     public Producto editProducto(Long id, Producto prod) {
+        Producto producto = new Producto();
         Producto productoEditar = this.findProducto(id);
-        productoEditar.setCodigo(prod.getCodigo());
-        productoEditar.setNombre(prod.getNombre());
-        productoEditar.setMarca(prod.getMarca());
-        productoEditar.setPrecio(prod.getPrecio());
-
-        return this.crearProducto(productoEditar);
+        if (productoEditar != null) {
+            productoEditar.setCodigo(prod.getCodigo());
+            productoEditar.setNombre(prod.getNombre());
+            productoEditar.setMarca(prod.getMarca());
+            productoEditar.setStock(prod.getStock());
+            productoEditar.setPrecio(prod.getPrecio());
+            this.crearProducto(productoEditar);
+            producto = this.findProducto(id);
+        }
+        return producto;
     }
+
+    @Override
+    public String restarStock(Long id) {
+        String msj = "Producto no encontrado";
+        Producto productoEditar = this.findProducto(id);
+        if (productoEditar != null) {
+            productoEditar.setStock(productoEditar.getStock() - 1);
+            msj = "Stock editado";
+            this.crearProducto(productoEditar);
+        }
+        return msj;
+    }
+
+    @Override
+    public String sumarStock(Long id) {
+        String msj = "Producto no encontrado";
+        Producto productoEditar = this.findProducto(id);
+        if (productoEditar != null) {
+            productoEditar.setStock(productoEditar.getStock() + 1);
+            msj = "Stock editado";
+            this.crearProducto(productoEditar);
+        }
+        return msj;
+    }
+
 }

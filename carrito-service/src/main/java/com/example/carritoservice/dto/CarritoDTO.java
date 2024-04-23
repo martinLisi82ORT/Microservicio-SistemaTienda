@@ -15,8 +15,6 @@ public class CarritoDTO {
 
     private Long id;
     private Double sumaTotal;
-
     private List<ProductoDTO> listaProductos;
-
 
 }

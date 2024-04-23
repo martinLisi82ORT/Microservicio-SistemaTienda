@@ -10,12 +10,16 @@ import java.util.List;
 @FeignClient(name = "carrito-service")
 public interface ICarritoAPI {
 
-    @GetMapping("/api/tienda/carrito/traer")
-    public List<CarritoDTO> traerCarritos();
+    /*@GetMapping("/api/tienda/carrito/traer")
+    public List<CarritoDTO> traerCarritos();*/
 
-    @GetMapping("/api/tienda/carrito/traer/{id}")
-    public CarritoDTO traerCarrito(@PathVariable Long id);
+   /* @GetMapping("/api/tienda/carrito/traer/{id}")
+    public CarritoDTO traerCarrito(@PathVariable Long id);*/
 
-    @GetMapping("/api/tienda/carrito/traerCarritoDTO/{id_carrito}")
+    @GetMapping("/api/tienda/carrito/traer/{id_carrito}")
     public CarritoDTO traerCarritoDTO(@PathVariable("id_carrito") Long id_carrito);
+
+    @GetMapping("/api/tienda/carrito/existe/{id_carrito}")
+    public Boolean existe(@PathVariable("id_carrito") Long id_carrito);
+
 }

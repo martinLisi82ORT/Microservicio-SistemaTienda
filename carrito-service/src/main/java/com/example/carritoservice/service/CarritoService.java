@@ -29,14 +29,14 @@ public class CarritoService implements ICarritoService {
     }
 
     @Override
-    public String eliminarCarrito(Long id_carrito) {
-        carritoRepo.deleteById(id_carrito);
-        return "El carrito id " + id_carrito + " fue eliminado";
-    }
-
-    @Override
-    public List<Carrito> traerCarritos() {
-        return carritoRepo.findAll();
+    public List<CarritoDTO> traerCarritos() {
+        List<CarritoDTO> listaDto = new ArrayList<>();
+        List<Carrito> listaCarritos = carritoRepo.findAll();
+        for (Carrito carr : listaCarritos) {
+            CarritoDTO carritoDto = this.traerCarritoDTO(carr.getId());
+            listaDto.add(carritoDto);
+        }
+        return listaDto;
     }
 
     @Override
@@ -58,56 +58,93 @@ public class CarritoService implements ICarritoService {
     }
 
     @Override
-    public Carrito traerCarrito(Long id) {
-        return carritoRepo.findById(id).orElse(null);
+    public boolean existe(Long id) {
+        return carritoRepo.existsById(id);
     }
 
     @Override
     @CircuitBreaker(name = "producto-service", fallbackMethod = "fallbackGetCarritoDTO")
     @Retry(name = "producto-service")
-    public CarritoDTO agregarProducto(Long id_carrito, Long id_prod) {
+    public Object[] agregarProducto(Long id_carrito, Long id_prod) {
+        Object[] listaObj = new Object[2];
 
         // Simula Exception para probar CircuitBreaker
         //createException();
 
-
         // Buscar Carrito
         Carrito carrito = carritoRepo.findById(id_carrito).orElse(null);
 
         // Buscar ProductoDTO
         ProductoDTO prodDo = prodAPI.traerProducto(id_prod);
 
-        // Actualiza lista Carrito
-        List<Long> lista = carrito.getListaProductos();
-        lista.add(prodDo.getCodigo());
-        carrito.setListaProductos(lista);
-
-        // Actualiza SumaTotal Carrito
-        double total = carrito.getSumaTotal();
-        carrito.setSumaTotal(total += prodDo.getPrecio());
-        carritoRepo.save(carrito);
-
-        // Crea lista de ProductoDTO
-        List<ProductoDTO> listaProd = new ArrayList<>();
-        for (Long prod : lista) {
-            listaProd.add(prodAPI.traerProducto(prod));
+        if (carrito != null && prodDo != null) {
+            actualizarlStock(id_prod, carrito, prodDo, listaObj);
+        } else {
+            listaObj[0] = "Error";
+            listaObj[1] = "Carrito o Producto Null";
         }
 
-        return new CarritoDTO(carrito.getId(), total, listaProd);
+        return listaObj;
+    }
+
+    // Resta el stock de Producto y modifica listaObj
+    private void actualizarlStock(Long id_prod, Carrito carrito, ProductoDTO prodDo, Object[] listaObj) {
+        if (prodAPI.traerStock(id_prod) > 0) {
+            // Actualiza stock Producto
+            prodAPI.restarStock(id_prod);
+
+            // Actualiza lista Carrito
+            List<Long> lista = carrito.getListaProductos();
+            lista.add(prodDo.getCodigo());
+            carrito.setListaProductos(lista);
+
+            // Actualiza SumaTotal Carrito
+            double total = carrito.getSumaTotal();
+            carrito.setSumaTotal(total += prodDo.getPrecio());
+            carritoRepo.save(carrito);
+
+            // Crea lista de ProductoDTO
+            List<ProductoDTO> listaProd = new ArrayList<>();
+            for (Long prod : lista) {
+                listaProd.add(prodAPI.traerProducto(prod));
+            }
+
+            listaObj[0] = "Producto agregado correctamente";
+            listaObj[1] = new CarritoDTO(carrito.getId(), total, listaProd);
+        } else {
+            listaObj[0] = "Error";
+            listaObj[1] = "Stock insuficiente";
+        }
     }
 
     @Override
-    public CarritoDTO eliminarProducto(Long id_carrito, Long id_prod) {
+    @CircuitBreaker(name = "producto-service", fallbackMethod = "fallbackGetCarritoDTO")
+    @Retry(name = "producto-service")
+    public Object[] eliminarProducto(Long id_carrito, Long id_prod) {
+        Object[] listaObj = new Object[2];
+
         // Buscar Carrito
         Carrito carrito = carritoRepo.findById(id_carrito).orElse(null);
 
         // Buscar ProductoDTO
         ProductoDTO prodDo = prodAPI.traerProducto(id_prod);
 
+        if (carrito != null && prodDo != null) {
+            this.quitarProducto(carrito, prodDo, listaObj);
+        } else {
+            listaObj[0] = "Error";
+            listaObj[1] = "Carrito o Producto Null";
+        }
+        return listaObj;
+    }
+
+    // Suma stock en Producto y modifica listaObj
+    private void quitarProducto(Carrito carrito, ProductoDTO prodDo, Object[] listaObj) {
         // Crea CarritoDTO
         CarritoDTO carritoDto = new CarritoDTO();
 
         if (carrito.getListaProductos().contains(prodDo.getCodigo())) {
+            prodAPI.sumarStock(prodDo.getCodigo());
             Double total = carrito.getSumaTotal();
             total -= prodDo.getPrecio();
             carrito.setSumaTotal(total);
@@ -124,8 +161,23 @@ public class CarritoService implements ICarritoService {
             carritoDto.setId(carrito.getId());
             carritoDto.setSumaTotal(total);
             carritoDto.setListaProductos(listaProd);
+
+            listaObj[0] = "Producto eliminado correctamente";
+            listaObj[1] = carritoDto;
+        } else {
+            listaObj[0] = "Error";
+            listaObj[1] = "Producto no encontrado en Carrito";
         }
-        return carritoDto;
+    }
+
+    @Override
+    public String eliminarCarrito(Long id_carrito) {
+        String msj = "Carrito no encontrado";
+        if (carritoRepo.findById(id_carrito).orElse(null) != null) {
+            carritoRepo.deleteById(id_carrito);
+            msj = "El carrito id " + id_carrito + " fue eliminado";
+        }
+        return msj;
     }
 
     private CarritoDTO fallbackGetCarritoDTO(Throwable throwable) {

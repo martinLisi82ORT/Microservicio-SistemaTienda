@@ -17,15 +17,19 @@ public class CarritoController {
     @Autowired
     private ICarritoService carrServ;
 
-    @GetMapping("/traer/{id}")
-    public ResponseEntity<Carrito> traerCarrito(@PathVariable Long id) {
-
-        return new ResponseEntity<>(carrServ.traerCarrito(id), HttpStatus.OK);
+    @GetMapping("/traer")
+    public ResponseEntity<List<CarritoDTO>> traerCarritos() {
+        return new ResponseEntity<>(carrServ.traerCarritos(), HttpStatus.OK);
     }
 
-    @GetMapping("/traer")
-    public ResponseEntity<List<Carrito>> traerCarritos() {
-        return new ResponseEntity<>(carrServ.traerCarritos(), HttpStatus.OK);
+    @GetMapping("traer/{id_carrito}")
+    public ResponseEntity<CarritoDTO> traerCarritoDTO(@PathVariable Long id_carrito) {
+        return new ResponseEntity<>(carrServ.traerCarritoDTO(id_carrito), HttpStatus.OK);
+    }
+
+    @GetMapping("existe/{id_carrito}")
+    public ResponseEntity<Boolean> existe(@PathVariable Long id_carrito) {
+        return new ResponseEntity<>(carrServ.existe(id_carrito), HttpStatus.OK);
     }
 
     @PostMapping("/crear")
@@ -33,13 +37,13 @@ public class CarritoController {
         return new ResponseEntity<>(carrServ.crearCarrito(carrito), HttpStatus.CREATED);
     }
 
-    @PutMapping("/agregarProd")
-    public ResponseEntity<CarritoDTO> agregarProducto(@RequestParam Long id_carrito, @RequestParam Long id_producto) {
+    @PutMapping("/agregar")
+    public ResponseEntity<Object[]> agregarProducto(@RequestParam Long id_carrito, @RequestParam Long id_producto) {
         return new ResponseEntity<>(carrServ.agregarProducto(id_carrito, id_producto), HttpStatus.OK);
     }
 
-    @PutMapping("/eliminarProd")
-    public ResponseEntity<CarritoDTO> eliminarProducto(@RequestParam Long id_carrito, @RequestParam Long id_producto) {
+    @PutMapping("/quitar")
+    public ResponseEntity<Object[]> eliminarProducto(@RequestParam Long id_carrito, @RequestParam Long id_producto) {
         return new ResponseEntity<>(carrServ.eliminarProducto(id_carrito, id_producto), HttpStatus.OK);
     }
 
@@ -48,9 +52,5 @@ public class CarritoController {
         return new ResponseEntity<>(carrServ.eliminarCarrito(id_carrito), HttpStatus.OK);
     }
 
-    @GetMapping("traerCarritoDTO/{id_carrito}")
-    public ResponseEntity<CarritoDTO> traerCarritoDTO(@PathVariable Long id_carrito) {
-        return new ResponseEntity<>(carrServ.traerCarritoDTO(id_carrito), HttpStatus.OK);
-    }
 
 }

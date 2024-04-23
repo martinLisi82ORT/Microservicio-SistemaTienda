@@ -3,9 +3,12 @@ package com.example.ventaservice.controller;
 import com.example.ventaservice.dto.VentaDTO;
 import com.example.ventaservice.model.Venta;
 import com.example.ventaservice.service.IVentaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +21,16 @@ public class VentaController {
     private IVentaService ventaServ;
 
     @PostMapping("/crear")
-    public ResponseEntity<Venta> crearVenta(@RequestBody Venta venta) {
-        return new ResponseEntity<>(ventaServ.crearVenta(venta), HttpStatus.CREATED);
+    public ResponseEntity<String> crearVenta(@Valid @RequestBody Venta venta, BindingResult result) {
+        String msj = "";
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                msj = error.getDefaultMessage();
+            }
+        } else {
+            msj = ventaServ.crearVenta(venta);
+        }
+        return new ResponseEntity<>(msj, HttpStatus.CREATED);
     }
 
     @GetMapping("/traer")
@@ -31,6 +42,12 @@ public class VentaController {
     public ResponseEntity<VentaDTO> traerVenta(@PathVariable Long id_venta) {
         return new ResponseEntity<>(ventaServ.traerVenta(id_venta), HttpStatus.OK);
 
+    }
+
+    @PutMapping("/editar/{id_venta}")
+    public ResponseEntity<Venta> editarVenta(@PathVariable Long id_venta, @RequestBody Venta venta) {
+        System.out.println(id_venta);
+        return new ResponseEntity<>(ventaServ.editarVenta(id_venta, venta), HttpStatus.OK);
     }
 
     @DeleteMapping("eliminar/{id_venta}")
