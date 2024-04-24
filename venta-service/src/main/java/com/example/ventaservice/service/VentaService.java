@@ -67,18 +67,23 @@ public class VentaService implements IVentaService {
     }
 
     @Override
-    public Venta editarVenta(Long id_venta, Venta venta) {
+    @CircuitBreaker(name = "carrito-service", fallbackMethod = "fallbackGetVentaDTO")
+    @Retry(name = "carrito-service")
+    public VentaDTO editarVenta(Long id_venta, Venta venta) {
+        VentaDTO ventaDto;
         Venta ventaEdit = repoVenta.findById(id_venta).orElse(null);
-        System.out.println(ventaEdit);
-        System.out.println(ventaEdit.getId_venta());
-        ventaEdit.setId_venta(venta.getId_venta());
-        ventaEdit.setFecha(venta.getFecha());
-        ventaEdit.setCarrito_id(venta.getCarrito_id());
 
-        repoVenta.save(ventaEdit);
+        if (carritoApi.existe(venta.getCarrito_id())) {
+            ventaEdit.setId_venta(venta.getId_venta());
+            ventaEdit.setFecha(venta.getFecha());
+            ventaEdit.setCarrito_id(venta.getCarrito_id());
+            repoVenta.save(ventaEdit);
+            ventaDto = this.traerVenta(id_venta);
+        } else {
+            throw new IllegalArgumentException();
+        }
 
-        VentaDTO ventaDto = this.traerVenta(id_venta);
-        return ventaEdit;
+        return ventaDto;
     }
 
     @Override

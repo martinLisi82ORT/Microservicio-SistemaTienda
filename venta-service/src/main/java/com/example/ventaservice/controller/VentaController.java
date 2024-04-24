@@ -45,8 +45,8 @@ public class VentaController {
     }
 
     @PutMapping("/editar/{id_venta}")
-    public ResponseEntity<Venta> editarVenta(@PathVariable Long id_venta, @RequestBody Venta venta) {
-        System.out.println(id_venta);
+    public ResponseEntity<VentaDTO> editarVenta(@PathVariable Long id_venta, @RequestBody Venta venta) {
+
         return new ResponseEntity<>(ventaServ.editarVenta(id_venta, venta), HttpStatus.OK);
     }
 

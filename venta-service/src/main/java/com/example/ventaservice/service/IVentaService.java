@@ -13,7 +13,7 @@ public interface IVentaService {
 
     public VentaDTO traerVenta(Long id_venta);
 
-    public Venta editarVenta(Long id_venta, Venta venta);
+    public VentaDTO editarVenta(Long id_venta, Venta venta);
 
     public String eliminarVenta(Long id_venta);
 }
