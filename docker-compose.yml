@@ -1,0 +1,41 @@
+version: '2.1'
+
+services:
+  eureka-sv:
+    build: eureka-sv
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    networks:
+      - 'productocarritoventa-network'
+  api-gateway:
+    build: api-gateway
+    mem_limit: 512m
+    ports:
+      - "443:443"
+    networks:
+      - 'productocarritoventa-network'
+  producto-service:
+    build: producto-service
+    mem_limit: 512m
+    ports:
+      - "8082:8082"
+    networks:
+      - 'productocarritoventa-network'
+  carrito-service:
+    build: carrito-service
+    mem_limit: 512m
+    ports:
+      - "8083:8083"
+    networks:
+      - 'productocarritoventa-network'
+  venta-service:
+    build: venta-service
+    mem_limit: 512m
+    ports:
+      - "8084:8084"
+    networks:
+      - 'productocarritoventa-network'
+
+networks:
+  productocarritoventa-network:
