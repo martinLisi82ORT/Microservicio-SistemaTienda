@@ -25,6 +25,12 @@ Cuenta también con los respectivos archivos _Dockerfile_ y el archivo _Docker C
 ### :page_facing_up: Documentacion:
 - [Postman Documentation](https://documenter.getpostman.com/view/32556955/2sA3Bt39wV)
 
+
+![Microservicio](https://github.com/martinLisi82ORT/Microservicio-SistemaTienda/assets/111402719/c5277f9f-e408-4253-b518-612ae234ed31)
+
+
+
+
 ---
 ### Herramientas utilizadas:
 Java | SpringBoot | MySQL | Docker | Netbeans 
