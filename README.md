@@ -26,7 +26,8 @@ Cuenta también con los respectivos archivos _Dockerfile_ y el archivo _Docker C
 - [Postman Documentation](https://documenter.getpostman.com/view/32556955/2sA3Bt39wV)
 
 
-![Microservicio](https://github.com/martinLisi82ORT/Microservicio-SistemaTienda/assets/111402719/c5277f9f-e408-4253-b518-612ae234ed31)
+![Microservicio](https://github.com/martinLisi82ORT/Microservicio-SistemaTienda/assets/111402719/dfe21a53-e581-4a48-ac30-2419c512cdd9)
+
 
 
 
