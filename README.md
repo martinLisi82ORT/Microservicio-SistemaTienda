@@ -34,7 +34,7 @@ Cuenta también con los respectivos archivos _Dockerfile_ y el archivo _Docker C
 
 ---
 ### Herramientas utilizadas:
-Java | SpringBoot | MySQL | Docker | Netbeans 
+Java | SpringBoot | MySQL | Docker | Intellij
 
 <div align="center">
 <img width="60" height="30" src="https://elblogdecodigo.files.wordpress.com/2014/12/java_logo.png" />
@@ -45,6 +45,6 @@ Java | SpringBoot | MySQL | Docker | Netbeans
 
 <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" />
 
-<img src="https://img.shields.io/badge/apache%20netbeans-1B6AC6?style=for-the-badge&logo=apache%20netbeans%20IDE&logoColor=white" />
+<img src="https://img.shields.io/badge/IntelliJ_IDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white" />
 </div
 
