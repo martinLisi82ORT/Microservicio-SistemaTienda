@@ -34,7 +34,7 @@ Cuenta también con los respectivos archivos _Dockerfile_ y el archivo _Docker C
 
 ---
 ### Herramientas utilizadas:
-Java | SpringBoot | MySQL | Docker | Intellij
+Java | SpringBoot | MySQL | Docker | Intellij IDEA
 
 <div align="center">
 <img width="60" height="30" src="https://elblogdecodigo.files.wordpress.com/2014/12/java_logo.png" />
