@@ -20,6 +20,27 @@ services:
     mem_limit: 512m
     ports:
       - "8082:8082"
+    environment:
+      DB_URL: jdbc:mysql://prod_serv:3306/serviciotienda_productos?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: root
+      DB_PASSWORD: 1234
+    restart: always
+    depends_on:
+      prod_serv:
+          condition: service_healthy
+  prod_serv:
+    image: mysql:8.0.34 
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: serviciotienda_productos
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10      
     networks:
       - 'productocarritoventa-network'
   carrito-service:
@@ -27,6 +48,27 @@ services:
     mem_limit: 512m
     ports:
       - "8083:8083"
+    environment:
+      DB_URL: jdbc:mysql://carrito_serv:3306/serviciotienda_carritocompras?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: root
+      DB_PASSWORD: 1234
+    restart: always
+    depends_on:
+      carrito_serv:
+          condition: service_healthy
+  carrito_serv:
+    image: mysql:8.0.34 
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: serviciotienda_carritocompras
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10    
     networks:
       - 'productocarritoventa-network'
   venta-service:
@@ -34,8 +76,29 @@ services:
     mem_limit: 512m
     ports:
       - "8084:8084"
+    environment:
+      DB_URL: jdbc:mysql://venta_serv:3306/serviciotienda_ventas?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: root
+      DB_PASSWORD: 1234
+    restart: always
+    depends_on:
+      venta_serv:
+          condition: service_healthy
+  venta_serv:
+    image: mysql:8.0.34 
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_PASSWORD: 1234
+      MYSQL_DATABASE: serviciotienda_ventas
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10    
     networks:
       - 'productocarritoventa-network'
 
 networks:
-  productocarritoventa-network:
+  productocarritoventa-network:   
